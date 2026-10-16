@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-kloudspot}
+      POSTGRES_USER: ${DB_USERNAME:-kloudspot}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kloudspot}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-kloudspot} -d ${DB_NAME:-kloudspot}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      PORT: "8080"
+      DB_URL: jdbc:postgresql://db:5432/${DB_NAME:-kloudspot}
+      DB_USERNAME: ${DB_USERNAME:-kloudspot}
+      DB_PASSWORD: ${DB_PASSWORD:-kloudspot}
+      # Leave JWT_SECRET unset to auto-generate a random secret per start
+      # (sessions reset on restart). Set a fixed 32+ character value for stable sessions.
+      JWT_SECRET: ${JWT_SECRET:-}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:${FRONTEND_PORT:-3000}}
+      OPENAPI_ENABLED: ${OPENAPI_ENABLED:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  db-data:

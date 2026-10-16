@@ -14,10 +14,15 @@ import com.vagish.kloudspot_crud.dto.DepartmentCreateRequest;
 import com.vagish.kloudspot_crud.dto.DepartmentResponse;
 import com.vagish.kloudspot_crud.service.DepartmentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/departments")
+@Tag(name = "Departments", description = "List and create departments.")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -27,12 +32,18 @@ public class DepartmentController {
     }
 
     @GetMapping
+    @Operation(summary = "List departments")
     public List<DepartmentResponse> list() {
         return departmentService.listAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a department")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Department created"),
+            @ApiResponse(responseCode = "400", description = "Validation failed"),
+            @ApiResponse(responseCode = "409", description = "Department name already exists")})
     public DepartmentResponse create(@Valid @RequestBody DepartmentCreateRequest request) {
         return departmentService.create(request);
     }

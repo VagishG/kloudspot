@@ -7,22 +7,25 @@ import java.util.UUID;
 
 import com.vagish.kloudspot_crud.model.Employee;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "EmployeeResponse", description = "An employee record.")
 public record EmployeeResponse(
-        UUID id,
-        String empId,
-        String fullName,
-        String email,
-        String phoneNumber,
-        UUID departmentId,
-        String departmentName,
-        String designation,
-        LocalDate dateOfJoining,
-        BigDecimal salary,
-        boolean status,
-        UUID createdBy,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
-        UUID updatedBy) {
+        @Schema(description = "Employee id") UUID id,
+        @Schema(description = "Employee code") String empId,
+        @Schema(description = "Full name") String fullName,
+        @Schema(description = "Email address") String email,
+        @Schema(description = "Phone number") String phoneNumber,
+        @Schema(description = "Department id") UUID departmentId,
+        @Schema(description = "Department name") String departmentName,
+        @Schema(description = "Job title") String designation,
+        @Schema(description = "Date of joining") LocalDate dateOfJoining,
+        @Schema(description = "Annual salary") BigDecimal salary,
+        @Schema(description = "Employment status") boolean status,
+        @Schema(description = "Admin id that created the record") UUID createdBy,
+        @Schema(description = "Creation timestamp") LocalDateTime createdAt,
+        @Schema(description = "Last update timestamp") LocalDateTime updatedAt,
+        @Schema(description = "Admin id that last updated the record") UUID updatedBy) {
 
     public static EmployeeResponse from(Employee employee) {
         return new EmployeeResponse(

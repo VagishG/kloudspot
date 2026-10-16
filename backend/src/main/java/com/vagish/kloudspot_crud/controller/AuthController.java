@@ -9,10 +9,15 @@ import com.vagish.kloudspot_crud.dto.LoginRequest;
 import com.vagish.kloudspot_crud.dto.LoginResponse;
 import com.vagish.kloudspot_crud.service.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
+@Tag(name = "Authentication", description = "Admin sign-in.")
 public class AuthController {
 
     private final AuthService authService;
@@ -22,6 +27,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Sign in", security = {}, description = "Returns a JWT bearer token for an admin account.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Signed in"),
+            @ApiResponse(responseCode = "401", description = "Invalid email or password")})
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }

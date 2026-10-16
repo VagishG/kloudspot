@@ -12,23 +12,31 @@ interface ModalProps {
 
 export function Modal({ open, onClose, title, children, footer }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const onCloseRef = useRef(onClose)
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') onCloseRef.current()
     }
     document.addEventListener('keydown', onKeyDown)
     document.body.style.overflow = 'hidden'
     const timer = setTimeout(() => {
-      panelRef.current?.focus()
+      const panel = panelRef.current
+      if (panel && !panel.contains(document.activeElement)) {
+        panel.focus()
+      }
     }, 0)
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.body.style.overflow = ''
       clearTimeout(timer)
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
 

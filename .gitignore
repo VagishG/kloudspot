@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local environment files (keep the .example templates)
+.env
+.env.local
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -43,7 +48,7 @@ target/
 *.iws
 *.iml
 *.ipr
-
+*.pdf
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
