@@ -39,9 +39,8 @@ public class Employee {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal salary;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "employment_status", nullable = false)
-    private EmployeeStatus employmentStatus;
+    private boolean status = true;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
@@ -150,12 +149,12 @@ public class Employee {
         this.salary = salary;
     }
 
-    public EmployeeStatus getEmploymentStatus() {
-        return employmentStatus;
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setEmploymentStatus(EmployeeStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public Admin getCreatedBy() {

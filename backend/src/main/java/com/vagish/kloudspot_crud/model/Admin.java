@@ -18,6 +18,9 @@ public class Admin {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -55,6 +58,14 @@ public class Admin {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public LocalDateTime getCreatedAt() {
