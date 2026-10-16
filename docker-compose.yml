@@ -15,7 +15,13 @@ services:
       retries: 10
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      # Disable provenance/SBOM attestations so the built tag is a plain image.
+      # With the containerd image store, attestation manifests can make
+      # `docker compose up --build` fail intermittently with "No such image".
+      provenance: false
+      sbom: false
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: prod
@@ -42,7 +48,10 @@ services:
       start_period: 30s
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      provenance: false
+      sbom: false
     restart: unless-stopped
     depends_on:
       backend:

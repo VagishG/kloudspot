@@ -55,6 +55,7 @@ admin accounts.
 │   └── package.json
 ├── docs/screenshots/   Screenshots of the running application
 ├── docker-compose.yml  Postgres + backend + frontend
+├── run.sh              Wrapper around Docker Compose (see Troubleshooting)
 └── README.md
 ```
 
@@ -70,12 +71,20 @@ admin accounts.
 
 ## Quick Start (Docker)
 
-Everything is self-contained: `docker compose up` pulls PostgreSQL, creates the
-database, wires the backend to it, and serves the app. No `.env`, no external
-database, and no code changes are required.
+Everything is self-contained: one command pulls PostgreSQL, creates the database,
+wires the backend to it, and serves the app. No `.env`, no external database, and
+no code changes are required.
 
 ```bash
 docker compose up --build
+```
+
+On some Docker installations (those using the containerd image store) this can
+fail with `No such image`; in that case use the bundled wrapper instead, which is
+otherwise identical:
+
+```bash
+./run.sh
 ```
 
 Then open:
@@ -104,6 +113,31 @@ Use `down -v` to reset to a clean database.
 
 To change ports or values, copy `.env.example` to `.env` and edit it (all values
 already have working defaults).
+
+### Troubleshooting
+
+**`Error response from daemon: No such image: ...-backend:latest` right after
+`docker compose up --build`.** This is a known bug in Docker Compose/buildx when
+Docker is configured with the containerd image store (`docker info` shows
+`driver-type: io.containerd.snapshotter.v1`); the build succeeds but the image
+tag cannot be resolved. Any of the following fixes it:
+
+- Use the wrapper: `./run.sh` (sets `BUILDX_NO_DEFAULT_ATTESTATIONS=1` and runs
+  `docker compose up --build`).
+- Or build and start in two steps: `docker compose build && docker compose up -d`.
+- Or run with the variable set directly:
+  `BUILDX_NO_DEFAULT_ATTESTATIONS=1 docker compose up --build`.
+- Or update Docker Compose/buildx to a version with the upstream fix.
+
+**`failed to bind host port ... address already in use`.** Another service is
+already using the port (the defaults are `8080` for the API and `3000` for the
+UI). Either stop that service, or choose free ports in a `.env`:
+
+```bash
+echo "BACKEND_PORT=18080"  >> .env
+echo "FRONTEND_PORT=13000" >> .env
+docker compose up --build
+```
 
 ---
 
