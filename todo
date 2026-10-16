@@ -1,0 +1,22 @@
+1. Objective
+Build a web application that allows an administrator to manage employee records through a simple and
+intuitive user interface. The application must support complete CRUD operations using a frontend, REST APIs,
+and a database.
+
+2. Functional requirements
+A. Employee management
+Each employee record must contain: Employee ID, Full Name, Email Address, Phone Number, Department,
+Designation, Date of Joining, Salary, and Employment Status (Active or Inactive).
+• Add a new employee; view employee details; edit employee information.
+• Delete an employee with confirmation; list all employees.
+• Search employees by name or email.
+• Filter by department and employment status.
+• Implement pagination for the employee list.
+B. User interface
+• Responsive Employee List page.
+• Add Employee page/form.
+• Edit Employee page/form.
+• Employee Details page.
+C. Backend
+Implement REST APIs to support the required employee management operations and integrate them with the
+frontend and persistent storage.
