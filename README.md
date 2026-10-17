@@ -8,6 +8,18 @@ admin accounts.
 - **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS.
 - **API docs:** OpenAPI 3 / Swagger UI (springdoc).
 
+THE DEFAULT ADMIN CREDENTIALS WHEN THE DOCKER IMAGE IS BUILT ARE :
+USERNAME: admin@kloudspot.com
+PASSWORD: admin123
+(the admin can futher create more admin users)
+
+To run make sure you have docker installed then run 
+docker compose build
+
+followed by 
+docker compose up
+
+http://localhost:3000/ use this url to view the app 
 ---
 
 ## Features
